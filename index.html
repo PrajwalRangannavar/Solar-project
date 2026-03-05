@@ -2,15 +2,54 @@
 <html>
 <head>
 <title>Solar Power Dashboard</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 </head>
 
 <body>
 
 <h1>Solar Power Monitoring System</h1>
 
-<p>Voltage : 12 V</p>
-<p>Current : 2 A</p>
-<p>Power : 24 W</p>
+<h2>Voltage: <span id="voltage">0</span> V</h2>
+<h2>Current: <span id="current">0</span> A</h2>
+<h2>Power: <span id="power">0</span> W</h2>
+
+<script>
+
+// Firebase configuration
+var firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+var database = firebase.database();
+
+// Read voltage
+database.ref("solar/voltage").on("value", function(snapshot) {
+document.getElementById("voltage").innerHTML = snapshot.val();
+});
+
+// Read current
+database.ref("solar/current").on("value", function(snapshot) {
+document.getElementById("current").innerHTML = snapshot.val();
+});
+
+// Read power
+database.ref("solar/power").on("value", function(snapshot) {
+document.getElementById("power").innerHTML = snapshot.val();
+});
+
+</script>
 
 </body>
 </html>
