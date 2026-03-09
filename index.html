@@ -1,53 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Solar Power Dashboard</title>
+<title>Solar Monitoring System</title>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<style>
+body{
+font-family: Arial;
+text-align:center;
+background:#f2f2f2;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:20px;
+display:inline-block;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+.value{
+font-size:28px;
+color:#0077ff;
+}
+</style>
 
 </head>
 
 <body>
 
-<h1>Solar Power Monitoring System</h1>
+<h1>Solar Panel Monitoring</h1>
 
-<h2>Voltage: <span id="voltage">0</span> V</h2>
-<h2>Current: <span id="current">0</span> A</h2>
-<h2>Power: <span id="power">0</span> W</h2>
+<div class="card">
+Voltage
+<div id="voltage" class="value">--</div>
+</div>
+
+<div class="card">
+Current
+<div id="current" class="value">--</div>
+</div>
+
+<div class="card">
+Power
+<div id="power" class="value">--</div>
+</div>
+
+<div class="card">
+Light
+<div id="lux" class="value">--</div>
+</div>
+
+<div class="card">
+Temperature
+<div id="temp" class="value">--</div>
+</div>
+
+<div class="card">
+Humidity
+<div id="hum" class="value">--</div>
+</div>
 
 <script>
 
-// Firebase configuration
-var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
-};
+const espIP = "http://192.168.1.45/data"; // CHANGE TO YOUR ESP32 IP
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+function loadData()
+{
+fetch(espIP)
+.then(response => response.json())
+.then(data => {
 
-var database = firebase.database();
+document.getElementById("voltage").innerHTML = data.voltage + " V";
+document.getElementById("current").innerHTML = data.current + " mA";
+document.getElementById("power").innerHTML = data.power + " W";
+document.getElementById("lux").innerHTML = data.lux + " lux";
+document.getElementById("temp").innerHTML = data.temperature + " °C";
+document.getElementById("hum").innerHTML = data.humidity + " %";
 
-// Read voltage
-database.ref("solar/voltage").on("value", function(snapshot) {
-document.getElementById("voltage").innerHTML = snapshot.val();
 });
+}
 
-// Read current
-database.ref("solar/current").on("value", function(snapshot) {
-document.getElementById("current").innerHTML = snapshot.val();
-});
-
-// Read power
-database.ref("solar/power").on("value", function(snapshot) {
-document.getElementById("power").innerHTML = snapshot.val();
-});
+setInterval(loadData,2000);
 
 </script>
 
